@@ -1,0 +1,10 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Permissive for LOCAL DEVELOPMENT with the Emulator Suite only.
+    // Do NOT deploy to production.
+    match /{allPaths=**} {
+      allow read, write: if true;
+    }
+  }
+}

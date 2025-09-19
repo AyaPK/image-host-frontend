@@ -6,22 +6,29 @@
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "emulators": "firebase emulators:start",
+    "dev:emu:win": "set NEXT_PUBLIC_USE_EMULATORS=1&& set NEXT_PUBLIC_EMULATOR_HOST=127.0.0.1&& set NEXT_PUBLIC_FIRESTORE_EMULATOR_PORT=8080&& set NEXT_PUBLIC_STORAGE_EMULATOR_PORT=9199&& next dev --turbopack",
+    "dev:emu:nix": "NEXT_PUBLIC_USE_EMULATORS=1 NEXT_PUBLIC_EMULATOR_HOST=127.0.0.1 NEXT_PUBLIC_FIRESTORE_EMULATOR_PORT=8080 NEXT_PUBLIC_STORAGE_EMULATOR_PORT=9199 next dev --turbopack"
   },
   "dependencies": {
+    "firebase": "^12.3.0",
+    "nanoid": "^5.1.5",
+    "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "next": "15.5.3"
+    "react-dropzone": "^14.3.8"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
-    "@eslint/eslintrc": "^3"
+    "firebase-tools": "^14.17.0",
+    "tailwindcss": "^4",
+    "typescript": "^5"
   }
 }
