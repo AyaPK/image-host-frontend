@@ -13,6 +13,18 @@ function classNames(...cls: Array<string | false | null | undefined>) {
   return cls.filter(Boolean).join(" ");
 }
 
+// Generate a 7-character case-sensitive ID using crypto-safe randomness
+const ID_ALPHABET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+function randomId(length = 7) {
+  const buf = new Uint32Array(length);
+  crypto.getRandomValues(buf);
+  let out = "";
+  for (let i = 0; i < length; i++) {
+    out += ID_ALPHABET[buf[i] % ID_ALPHABET.length];
+  }
+  return out;
+}
+
 export default function UploadPage() {
   const { db, storage } = getFirebase();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -35,8 +47,24 @@ export default function UploadPage() {
       setUploading(true);
       setProgress(0);
       try {
-        const id = crypto.randomUUID();
-        const path = `images/${id}/${file.name}`;
+        const id = randomId(7);
+        // Derive a safe extension. Prefer the original filename's extension, then fall back to MIME type.
+        const originalExt = file.name.includes(".") ? file.name.split(".").pop()!.toLowerCase() : "";
+        const mimeExtMap: Record<string, string> = {
+          "image/jpeg": "jpg",
+          "image/jpg": "jpg",
+          "image/png": "png",
+          "image/gif": "gif",
+          "image/webp": "webp",
+          "image/svg+xml": "svg",
+          "image/heic": "heic",
+          "image/heif": "heif",
+          "image/bmp": "bmp",
+          "image/tiff": "tiff",
+        };
+        const fallbackExt = mimeExtMap[file.type] || "";
+        const ext = (originalExt || fallbackExt).replace(/[^a-z0-9]/g, "");
+        const path = `${id}${ext ? "." + ext : ""}`;
         const ref = storageRef(storage, path);
         const task = uploadBytesResumable(ref, file, { contentType: file.type });
 
@@ -178,3 +206,4 @@ export default function UploadPage() {
     </div>
   );
 }
+
